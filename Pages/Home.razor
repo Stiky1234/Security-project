@@ -1,0 +1,71 @@
+﻿@using BlazorApp1.services
+
+@page "/"
+
+<div class="crypto-container">
+    <div class="glass-card">
+        <h1 class="glow-text">
+            <span class="emoji">🔐</span> Crypto Sandbox
+        </h1>
+
+        <div class="input-section">
+            @* The 'userInput' variable is defined below *@
+            <textarea @bind="userInput" placeholder="Enter your data..." class="cyber-input"></textarea>
+            
+            <div class="controls">
+                @* The 'selectedOption' variable is defined below *@
+                <select @bind="selectedOption" class="cyber-select">
+                    <option value="Base64">Base64 Encode</option>
+                    <option value="Caesar">Caesar Cipher</option>
+                    <option value="SHA256">SHA-256 Hash</option>
+                </select>
+                
+                @* The 'Execute' method is defined below *@
+                <button class="run-btn" @onclick="Execute">
+                    <span>RUN SYSTEM</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="result-section">
+            <h3>Result</h3>
+            <div class="result-box">
+                @result @* The 'result' variable is defined below *@
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    // 1. Define the variables (The "State")
+    private string userInput = "";
+    private string selectedOption = "Base64";
+    private string result = "SYSTEM_READY...";
+
+    // 2. Define the logic (The "Action")
+    private void Execute()
+    {
+        if (string.IsNullOrWhiteSpace(userInput))
+        {
+            result = "ERROR: NO_INPUT_DETECTED";
+            return;
+        }
+
+        switch (selectedOption)
+        {
+            case "Base64":
+                result = SecuritySandbox.EncodeBase64(userInput);
+                break;
+            case "Caesar":
+                // Defaulting to a shift of 3 for the UI button
+                result = SecuritySandbox.EncryptCaesar(userInput, 3);
+                break;
+            case "SHA256":
+                result = SecuritySandbox.HashFastSHA256(userInput);
+                break;
+            default:
+                result = "UNKNOWN_PROTOCOL";
+                break;
+        }
+    }
+}
